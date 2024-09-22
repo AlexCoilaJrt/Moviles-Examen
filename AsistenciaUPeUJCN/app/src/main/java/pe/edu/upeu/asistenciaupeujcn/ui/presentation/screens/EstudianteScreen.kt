@@ -1,43 +1,48 @@
 package pe.edu.upeu.asistenciaupeujcn.ui.presentation.screens
 
-// ui/screens/EstudianteScreen.kt
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import pe.edu.upeu.asistenciaupeujcn.modelo.Estudiante
 import pe.edu.upeu.asistenciaupeujcn.ui.presentation.screens.login.EstudianteViewModel
 
 @Composable
-fun EstudianteScreen(viewModel: EstudianteViewModel = viewModel()) {
+fun EstudianteScreen(
+    viewModel: EstudianteViewModel = hiltViewModel(),
+    navegarPantalla2: (String) -> Unit
+) {
     val estudiantes by viewModel.estudiantes.collectAsState()
 
     var nombre by remember { mutableStateOf("") }
     var grado by remember { mutableStateOf("") }
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.SpaceAround,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         // Formulario para agregar estudiante
-        BasicTextField(
+        TextField(
             value = nombre,
             onValueChange = { nombre = it },
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
-            decorationBox = { innerTextField ->
-                if (nombre.isEmpty()) Text("Nombre")
-                innerTextField()
-            }
+            label = { Text("Nombre") },
+            modifier = Modifier.fillMaxWidth().padding(8.dp)
         )
-        BasicTextField(
+        TextField(
             value = grado,
             onValueChange = { grado = it },
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
-            decorationBox = { innerTextField ->
-                if (grado.isEmpty()) Text("Grado")
-                innerTextField()
-            }
+            label = { Text("Grado") },
+            modifier = Modifier.fillMaxWidth().padding(8.dp)
         )
         Button(onClick = {
             val estudiante = Estudiante(0, nombre, grado)
@@ -46,17 +51,23 @@ fun EstudianteScreen(viewModel: EstudianteViewModel = viewModel()) {
             Text("Agregar Estudiante")
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         // Lista de estudiantes
-        estudiantes.forEach { estudiante ->
-            Row(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
-                Text(estudiante.nombre, Modifier.weight(1f))
-                Text(estudiante.grado, Modifier.weight(1f))
-                Button(onClick = { viewModel.deleteEstudiante(estudiante.id) }) {
-                    Text("Eliminar")
+        LazyColumn {
+            items(estudiantes) { estudiante ->
+                Row(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+                    Text(text = estudiante.nombre, Modifier.weight(1f))
+                    Text(text = estudiante.grado, Modifier.weight(1f))
+                    Button(onClick = { viewModel.deleteEstudiante(estudiante.id) }) {
+                        Text("Eliminar")
+                    }
                 }
             }
         }
+
+        Button(onClick = { navegarPantalla2("Texto") }) {
+            Text("Enviar")
+        }
     }
 }
+
+

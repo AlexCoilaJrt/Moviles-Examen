@@ -39,8 +39,6 @@ import pe.edu.upeu.asistenciaupeujcn.utils.isNight
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    // Inyectar el EstudianteViewModel en la actividad principal
-    private val estudianteViewModel: EstudianteViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,7 +75,6 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         darkMode = darkTheme,
                         themeType = themeType,
-                        estudianteViewModel = estudianteViewModel // Pasar el ViewModel al Composable principal
                     )
                 }
             }
@@ -90,7 +87,6 @@ fun MainScreen(
     navController: NavHostController,
     darkMode: MutableState<Boolean>,
     themeType: MutableState<ThemeType>,
-    estudianteViewModel: EstudianteViewModel // Recibir el ViewModel como parámetro
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -101,6 +97,7 @@ fun MainScreen(
         Destinations.Pantalla3,
         Destinations.Pantalla4,
         Destinations.Pantalla5,
+        Destinations.EstudianteScreen,
     )
     val currentNavBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentNavBackStackEntry?.destination?.route ?: Destinations.Pantalla1.route
@@ -145,20 +142,7 @@ fun MainScreen(
                     openDialog = { openDialog.value = true }
                 )
             },
-            floatingActionButton = {
-                FloatingActionButton(onClick = {
-                    scope.launch {
-                        val estudiante = Estudiante(
-                            id = 0, // Si el ID se genera automáticamente, puedes dejarlo en 0
-                            nombre = "Juan",
-                            grado = "Ingeniería de Sistemas"
-                        )
-                        estudianteViewModel.createEstudiante(estudiante) // Pasar el estudiante al método// Ejemplo de cómo llamar al ViewModel
-                    }
-                }) {
-                    Text("Crear Estudiante")
-                }
-            }
+
         ) {
             NavigationHost(navController, darkMode, modif = it)
         }

@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import pe.edu.upeu.asistenciaupeujcn.ui.presentation.screens.EstudianteScreen
 import pe.edu.upeu.asistenciaupeujcn.ui.presentation.screens.Pantalla1
 import pe.edu.upeu.asistenciaupeujcn.ui.presentation.screens.Pantalla2
 import pe.edu.upeu.asistenciaupeujcn.ui.presentation.screens.Pantalla3
@@ -28,6 +29,11 @@ fun NavigationHost(
             LoginScreen(navigateToHome = {
 
                 navController.navigate(Destinations.Pantalla1.route)})
+        }
+        composable(Destinations.EstudianteScreen.route) {
+            EstudianteScreen(
+                navegarPantalla2 = { newText -> navController.navigate(Destinations.Pantalla2.createRoute(newText)) }
+            )
         }
         composable(Destinations.Pantalla1.route) {
             Pantalla1(
